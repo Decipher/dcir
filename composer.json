@@ -1,0 +1,14 @@
+{
+    "name": "decipher/dcir",
+    "description": "Drupal common CI runner",
+    "homepage": "https://github.com/Decipher/dcir",
+    "license": "GPL-2.0+",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        { "name": "Stuart Clark", "email": "stu@rtclark.net" }
+    ],
+    "bin": [
+        "dcir"
+    ]
+}
