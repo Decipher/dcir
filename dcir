@@ -27,31 +27,37 @@ export DCIR_SCRIPT_DIR=$(dirname "$SELF_PATH")
 # @TODO - Discover project type and configuration. 
 CONFIG_FILE="/dcir/.dcir.yml"
 if [ ! -f $CONFIG_FILE ]; then
-  echo "Error: .dcir.yml file not found." 1>&2
-  exit 1
+    echo "Error: .dcir.yml file not found." 1>&2
+    exit 1
 fi
 
 # Parse YAML configuration file.
 . $DCIR_SCRIPT_DIR/utility/parse_yaml.sh
 eval $(parse_yaml $CONFIG_FILE)
 
-# Setup project in relevant Drupal core.
-cd drupal-$drupal_core
-MODULES_DIR=modules
-if [ $drupal_core == 7 ]; then
-    MODULES_DIR=sites/all/modules
+# Initialise environment.
+SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-$drupal_core.sh"
+if [ -r "$SCRIPT" ]
+then
+    . "$SCRIPT"
 fi
-ln -s /dcir $MODULES_DIR/$drupal_project
+cd drupal-$drupal_core
 
-# Enable project and download dependencies.
-drush en $drupal_project -y
+# Include project specific functions/variables.
+SCRIPT="$DCIR_SCRIPT_DIR/projects/$drupal_project_type.sh"
+if [ -r "$SCRIPT" ]
+then
+    . "$SCRIPT"
+fi
+
+# Symlink project into relevant destination path.
+ln -s /dcir $DRUPAL_PROJECT_DIR/$drupal_project
+
+# Initialise project.
+drupal_project_init
 
 # Run Drush webserver.
 drush runserver "http://127.0.0.1:8080" > /dev/null 2>&1 &
 
 # Run simpletests.
-SIMPLETEST_SCRIPT=core/scripts/run-tests.sh
-if [ $drupal_core == 7 ]; then
-    SIMPLETEST_SCRIPT=scripts/run-tests.sh
-fi
 php $SIMPLETEST_SCRIPT --php /opt/phpenv/shims/php --verbose --color --concurrency 4 --url http://127.0.0.1:8080 "$simpletest_group"
