@@ -35,8 +35,20 @@ fi
 . $DCIR_SCRIPT_DIR/utility/parse_yaml.sh
 eval $(parse_yaml $CONFIG_FILE)
 
+# Setup project in relevant Drupal core.
+cd drupal-$drupal_core
+MODULES_DIR=modules
+if [ $drupal_core == 7 ]; then
+    MODULES_DIR=sites/all/modules
+fi
+ln -s /module $MODULES_DIR/local
+
 # Run Drush webserver.
 drush runserver "http://127.0.0.1:8080" > /dev/null 2>&1 &
 
 # Run simpletests.
-php core/scripts/run-tests.sh --php /opt/phpenv/shims/php --verbose --color --concurrency 4 --url http://127.0.0.1:8080 "$simpletest_group"
+SIMPLETEST_SCRIPT=core/scripts/run-tests.sh
+if [ $drupal_core == 7 ]; then
+    SIMPLETEST_SCRIPT=scripts/run-tests.sh
+fi
+php $SIMPLETEST_SCRIPT --php /opt/phpenv/shims/php --verbose --color --concurrency 4 --url http://127.0.0.1:8080 "$simpletest_group"
