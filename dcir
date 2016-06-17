@@ -36,15 +36,15 @@ fi
 eval $(parse_yaml $CONFIG_FILE)
 
 # Initialise environment.
-SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-$drupal_core.sh"
+SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${drupal_core:-8}.sh"
 if [ -r "$SCRIPT" ]
 then
     . "$SCRIPT"
 fi
-cd drupal-$drupal_core
+cd drupal-${drupal_core:-8}
 
 # Include project specific functions/variables.
-SCRIPT="$DCIR_SCRIPT_DIR/projects/$drupal_project_type.sh"
+SCRIPT="$DCIR_SCRIPT_DIR/projects/${drupal_project_type:-module}.sh"
 if [ -r "$SCRIPT" ]
 then
     . "$SCRIPT"
