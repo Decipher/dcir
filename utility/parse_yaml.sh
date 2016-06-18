@@ -10,12 +10,20 @@ parse_yaml() {
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
    awk -F$fs '{
-      indent = length($1)/2;
+      indent = length($1) / 2;
       vname[indent] = $2;
-      for (i in vname) {if (i > indent) {delete vname[i]}}
+      for (i in vname) {
+          if (i > indent) {
+              delete vname[i];
+          }
+      }
       if (length($3) > 0) {
-         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+         vn = "";
+         for (i=0; i < indent; i++) {
+             vn = (vn)(vname[i])("_");
+         }
+         key = toupper(("'$prefix'")(vn)($2));
+         printf("%s=\"%s\"\n", key, $3);
       }
    }'
 }

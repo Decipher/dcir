@@ -33,25 +33,25 @@ fi
 
 # Parse YAML configuration file.
 . $DCIR_SCRIPT_DIR/utility/parse_yaml.sh
-eval $(parse_yaml $CONFIG_FILE)
+eval $(parse_yaml $CONFIG_FILE config_)
 
 # Initialise environment.
-SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${drupal_core:-8}.sh"
+SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${CONFIG_DRUPAL_CORE:-8}.sh"
 if [ -r "$SCRIPT" ]
 then
     . "$SCRIPT"
 fi
-cd drupal-${drupal_core:-8}
+cd drupal-${CONFIG_DRUPAL_CORE:-8}
 
 # Include project specific functions/variables.
-SCRIPT="$DCIR_SCRIPT_DIR/projects/${drupal_project_type:-module}.sh"
+SCRIPT="$DCIR_SCRIPT_DIR/projects/${CONFIG_DRUPAL_PROJECT_TYPE:-module}.sh"
 if [ -r "$SCRIPT" ]
 then
     . "$SCRIPT"
 fi
 
 # Symlink project into relevant destination path.
-ln -s /dcir $DRUPAL_PROJECT_DIR/$drupal_project
+ln -s /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
 
 # Initialise project.
 drupal_project_init
@@ -60,4 +60,4 @@ drupal_project_init
 drush runserver "http://127.0.0.1:8080" > /dev/null 2>&1 &
 
 # Run simpletests.
-php $SIMPLETEST_SCRIPT --php /opt/phpenv/shims/php --verbose --color --concurrency 4 --url http://127.0.0.1:8080 "$simpletest_group"
+php $SIMPLETEST_SCRIPT --php /opt/phpenv/shims/php --verbose --color --concurrency 4 --url http://127.0.0.1:8080 "$CONFIG_SIMPLETEST_GROUP"
