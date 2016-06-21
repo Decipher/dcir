@@ -56,11 +56,14 @@ ln -s /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
 # Initialise project.
 drupal_project_init
 
-# Run Code review.
-phpcs --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,js,css,info,txt,md $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT 
-
 # Run Drush webserver.
 drush runserver "http://127.0.0.1:8080" > /dev/null 2>&1 &
 
-# Run simpletests.
-php $SIMPLETEST_SCRIPT --php /opt/phpenv/shims/php --verbose --color --concurrency 4 --url http://127.0.0.1:8080 "$CONFIG_SIMPLETEST_GROUP"
+# Include and execute runners.
+for SCRIPT in "$DCIR_SCRIPT_DIR/runners"/*.sh
+do
+    if [ -r "$SCRIPT" ]
+    then
+        . "$SCRIPT"
+    fi
+done
