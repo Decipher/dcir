@@ -10,5 +10,9 @@
     ],
     "bin": [
         "dcir"
-    ]
+    ],
+    "require": {
+        "drupal/coder": "8.*",
+        "drush/drush": "8.*"
+    }
 }

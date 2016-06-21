@@ -5,6 +5,6 @@ export DRUPAL_PROJECT_DIR=$DRUPAL_MODULES_DIR
 function drupal_project_init() {
     echo -e "\nEnable and download project dependencies"
     echo -e "----------------------------------------\n"
-    drush en $drupal_project -y
+    drush en $CONFIG_DRUPAL_PROJECT -y
     echo -e "\n"
 }
