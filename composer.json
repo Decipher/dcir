@@ -10,5 +10,8 @@
     ],
     "bin": [
         "dcir"
-    ]
+    ],
+    "require": {
+        "drush/drush": "8.*"
+    }
 }
