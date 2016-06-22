@@ -35,7 +35,7 @@ if [ -f $CONFIG_FILE ]; then
 else
     FILES=/dcir/*.info?(.yml)
     if [ ${#FILES[@]} -eq 1 ] && [ ! -z ${FILES[0]} ]; then
-        CONFIG_DRUPAL_CORE=$(grep 'core.*[0-9]' < ${FILES[0]} | grep -o '[0-9]*')
+        CONFIG_DRUPAL_CORE=$(grep '^core.*[0-9]' < ${FILES[0]} | grep -o '[0-9]*')
         FILENAME=$(basename ${FILES[0]})
         CONFIG_DRUPAL_PROJECT=${FILENAME%.info?(.yml)}
 
