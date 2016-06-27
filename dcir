@@ -4,6 +4,14 @@ shopt -s nullglob
 
 set -e
 
+# Initialize environment script.
+function environment_init() {
+    SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${CONFIG_DRUPAL_CORE:-8}.sh"
+    if [ -r "$SCRIPT" ]; then
+        . "$SCRIPT"
+    fi
+}
+
 ### Path resolving from drush/drush:drush
 
 # Get the absolute path of this executable
@@ -39,6 +47,11 @@ else
         FILENAME=$(basename ${FILES[0]})
         CONFIG_DRUPAL_PROJECT=${FILENAME%.info?(.yml)}
 
+        # Run environment specific discovery fucntion.
+        environment_init
+        environment_discovery
+
+
     # Error: No config could be determined.
     else
         echo "Error: .dcir.yml file not found." 1>&2
@@ -47,10 +60,7 @@ else
 fi
 
 # Initialise environment.
-SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${CONFIG_DRUPAL_CORE:-8}.sh"
-if [ -r "$SCRIPT" ]; then
-    . "$SCRIPT"
-fi
+environment_init
 cd drupal-${CONFIG_DRUPAL_CORE:-8}
 
 # Include project specific functions/variables.
