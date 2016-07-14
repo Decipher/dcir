@@ -4,6 +4,14 @@ shopt -s nullglob
 
 set -e
 
+# Initialize environment script.
+function environment_init() {
+    SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${CONFIG_DRUPAL_CORE:-8}.sh"
+    if [ -r "$SCRIPT" ]; then
+        . "$SCRIPT"
+    fi
+}
+
 ### Path resolving from drush/drush:drush
 
 # Get the absolute path of this executable
@@ -39,6 +47,11 @@ else
         FILENAME=$(basename ${FILES[0]})
         CONFIG_DRUPAL_PROJECT=${FILENAME%.info?(.yml)}
 
+        # Run environment specific discovery fucntion.
+        environment_init
+        environment_discovery
+
+
     # Error: No config could be determined.
     else
         echo "Error: .dcir.yml file not found." 1>&2
@@ -47,11 +60,9 @@ else
 fi
 
 # Initialise environment.
-SCRIPT="$DCIR_SCRIPT_DIR/environments/drupal-${CONFIG_DRUPAL_CORE:-8}.sh"
-if [ -r "$SCRIPT" ]; then
-    . "$SCRIPT"
-fi
+environment_init
 cd drupal-${CONFIG_DRUPAL_CORE:-8}
+DCIR_ROOT=$(pwd)
 
 # Include project specific functions/variables.
 SCRIPT="$DCIR_SCRIPT_DIR/projects/${CONFIG_DRUPAL_PROJECT_TYPE:-module}.sh"
@@ -59,14 +70,18 @@ if [ -r "$SCRIPT" ]; then
     . "$SCRIPT"
 fi
 
-# Symlink project into relevant destination path.
-ln -s /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
+# Copy project into relevant destination path.
+# @TODO - Make this configurable; Symlink or Copy.
+cp -R /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
+# ln -s /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
 
 # Initialise project.
 drupal_project_init
 
 # Run Drush webserver.
 drush runserver "http://127.0.0.1:8080" > /dev/null 2>&1 &
+
+set +e
 
 # Include and execute runners.
 for SCRIPT in "$DCIR_SCRIPT_DIR/runners"/*.sh; do

@@ -12,7 +12,7 @@
         "dcir"
     ],
     "require": {
-        "drupal/coder": "8.*",
+        "alexdesignworks/dcr": "0.1.*",
         "drush/drush": "8.*"
     }
 }
