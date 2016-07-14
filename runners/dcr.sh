@@ -8,4 +8,4 @@ echo -e "-------\n"
 dcr init > /dev/null && dcr -v .
 echo -e "\n"
 
-cd -
+cd $DCIR_ROOT
