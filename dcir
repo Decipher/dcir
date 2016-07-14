@@ -69,8 +69,10 @@ if [ -r "$SCRIPT" ]; then
     . "$SCRIPT"
 fi
 
-# Symlink project into relevant destination path.
-ln -s /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
+# Copy project into relevant destination path.
+# @TODO - Make this configurable; Symlink or Copy.
+cp -R /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
+# ln -s /dcir $DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT
 
 # Initialise project.
 drupal_project_init
