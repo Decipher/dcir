@@ -11,3 +11,15 @@ function environment_discovery() {
         CONFIG_DRUPAL_PROJECT_TYPE="profile"
     fi
 }
+
+function simpletest_discovery() {
+    FILES=$(grep '^files\[\].*\.test$' < "$DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT/$CONFIG_DRUPAL_PROJECT.info" | grep -o '[a-z_\-\/\.]*.test$')
+    if [ ! -z "${FILES[0]}" ]; then
+        SIMPLETEST_RUN=true
+        SIMPLETEST_ARGS="--file "
+        for FILE in ${FILES[0]}; do
+            SIMPLETEST_ARGS="$SIMPLETEST_ARGS$DRUPAL_PROJECT_DIR/$CONFIG_DRUPAL_PROJECT/$FILE,"
+        done
+        SIMPLETEST_ARGS=${SIMPLETEST_ARGS::-1}
+    fi
+}
