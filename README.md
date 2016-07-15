@@ -17,7 +17,7 @@ as locally.
 Run the following command from the module directory you wish to test:
 
 ```
-docker run --rm -it -v $(pwd):/dcir decipher/dcir:latest
+docker run --rm -it -v $(pwd):/dcir deciphered/dcir:latest
 ```
 
 
