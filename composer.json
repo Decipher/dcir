@@ -12,7 +12,7 @@
         "dcir"
     ],
     "require": {
-        "alexdesignworks/dcr": "0.1.*",
+        "alexdesignworks/dcr": "0.2.*",
         "drush/drush": "8.*"
     }
 }
